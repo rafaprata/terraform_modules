@@ -7,6 +7,9 @@ resource "kubernetes_manifest" "serviceaccount_kube_system_eks_admin" {
       "namespace" = "kube-system"
     }
   }
+  depends_on = [
+    kubernetes_manifest.deployment_kubernetes_dashboard_dashboard_metrics_scraper
+  ]
 }
 
 resource "kubernetes_manifest" "clusterrolebinding_eks_admin" {
@@ -29,6 +32,9 @@ resource "kubernetes_manifest" "clusterrolebinding_eks_admin" {
       },
     ]
   }
+  depends_on = [
+    kubernetes_manifest.serviceaccount_kube_system_eks_admin
+  ]
 }
 
 resource "kubernetes_manifest" "secret_kube_system_eks_admin" {
@@ -44,4 +50,7 @@ resource "kubernetes_manifest" "secret_kube_system_eks_admin" {
     }
     "type" = "kubernetes.io/service-account-token"
   }
+  depends_on = [
+    kubernetes_manifest.clusterrolebinding_eks_admin
+  ]
 }

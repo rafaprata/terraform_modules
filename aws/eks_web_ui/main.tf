@@ -20,6 +20,9 @@ resource "kubernetes_manifest" "serviceaccount_kubernetes_dashboard_kubernetes_d
       "namespace" = "kubernetes-dashboard"
     }
   }
+    depends_on = [
+    kubernetes_manifest.namespace_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "service_kubernetes_dashboard_kubernetes_dashboard" {
@@ -45,6 +48,9 @@ resource "kubernetes_manifest" "service_kubernetes_dashboard_kubernetes_dashboar
       }
     }
   }
+  depends_on = [
+    kubernetes_manifest.serviceaccount_kubernetes_dashboard_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "secret_kubernetes_dashboard_kubernetes_dashboard_certs" {
@@ -60,6 +66,9 @@ resource "kubernetes_manifest" "secret_kubernetes_dashboard_kubernetes_dashboard
     }
     "type" = "Opaque"
   }
+  depends_on = [
+    kubernetes_manifest.service_kubernetes_dashboard_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "secret_kubernetes_dashboard_kubernetes_dashboard_csrf" {
@@ -78,6 +87,9 @@ resource "kubernetes_manifest" "secret_kubernetes_dashboard_kubernetes_dashboard
     }
     "type" = "Opaque"
   }
+  depends_on = [
+    kubernetes_manifest.secret_kubernetes_dashboard_kubernetes_dashboard_certs
+  ]
 }
 
 resource "kubernetes_manifest" "secret_kubernetes_dashboard_kubernetes_dashboard_key_holder" {
@@ -93,6 +105,9 @@ resource "kubernetes_manifest" "secret_kubernetes_dashboard_kubernetes_dashboard
     }
     "type" = "Opaque"
   }
+  depends_on = [
+    kubernetes_manifest.secret_kubernetes_dashboard_kubernetes_dashboard_csrf
+  ]
 }
 
 resource "kubernetes_manifest" "configmap_kubernetes_dashboard_kubernetes_dashboard_settings" {
@@ -107,6 +122,9 @@ resource "kubernetes_manifest" "configmap_kubernetes_dashboard_kubernetes_dashbo
       "namespace" = "kubernetes-dashboard"
     }
   }
+  depends_on = [
+    kubernetes_manifest.secret_kubernetes_dashboard_kubernetes_dashboard_key_holder
+  ]
 }
 
 resource "kubernetes_manifest" "role_kubernetes_dashboard_kubernetes_dashboard" {
@@ -189,6 +207,9 @@ resource "kubernetes_manifest" "role_kubernetes_dashboard_kubernetes_dashboard" 
       },
     ]
   }
+  depends_on = [
+    kubernetes_manifest.configmap_kubernetes_dashboard_kubernetes_dashboard_settings
+  ]
 }
 
 resource "kubernetes_manifest" "clusterrole_kubernetes_dashboard" {
@@ -218,6 +239,9 @@ resource "kubernetes_manifest" "clusterrole_kubernetes_dashboard" {
       },
     ]
   }
+  depends_on = [
+    kubernetes_manifest.role_kubernetes_dashboard_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "rolebinding_kubernetes_dashboard_kubernetes_dashboard" {
@@ -244,6 +268,9 @@ resource "kubernetes_manifest" "rolebinding_kubernetes_dashboard_kubernetes_dash
       },
     ]
   }
+  depends_on = [
+    kubernetes_manifest.clusterrole_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "clusterrolebinding_kubernetes_dashboard" {
@@ -266,6 +293,9 @@ resource "kubernetes_manifest" "clusterrolebinding_kubernetes_dashboard" {
       },
     ]
   }
+  depends_on = [
+    kubernetes_manifest.rolebinding_kubernetes_dashboard_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "deployment_kubernetes_dashboard_kubernetes_dashboard" {
@@ -367,6 +397,9 @@ resource "kubernetes_manifest" "deployment_kubernetes_dashboard_kubernetes_dashb
       }
     }
   }
+  depends_on = [
+    kubernetes_manifest.clusterrolebinding_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "service_kubernetes_dashboard_dashboard_metrics_scraper" {
@@ -392,6 +425,9 @@ resource "kubernetes_manifest" "service_kubernetes_dashboard_dashboard_metrics_s
       }
     }
   }
+  depends_on = [
+    kubernetes_manifest.deployment_kubernetes_dashboard_kubernetes_dashboard
+  ]
 }
 
 resource "kubernetes_manifest" "deployment_kubernetes_dashboard_dashboard_metrics_scraper" {
@@ -478,4 +514,7 @@ resource "kubernetes_manifest" "deployment_kubernetes_dashboard_dashboard_metric
       }
     }
   }
+  depends_on = [
+    kubernetes_manifest.service_kubernetes_dashboard_dashboard_metrics_scraper
+  ]
 }
