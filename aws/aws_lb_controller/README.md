@@ -12,8 +12,10 @@ More information: https://docs.aws.amazon.com/eks/latest/userguide/aws-load-bala
 ### How to use this module?
 ```
 module "aws_lb_controller" { 
-    source = "github.com/raxkumar/terraform_modules/aws/aws_lb_controller" 
+    source = "github.com/rafaprata/terraform_modules/aws/aws_lb_controller" 
     cluster_name = "eks_cluster_name" 
-    region = "eks_cluster_deployed_region" 
+    region = "eks_cluster_deployed_region"
+    # This value can be found at https://github.com/kubernetes-sigs/aws-load-balancer-controller/releases/latest
+    aws_lb_controller_version = "Load Balancer Controller Version"
 }
 ```
