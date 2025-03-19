@@ -1,5 +1,5 @@
 data "http" "aws_lb_controller_policy" {
-  url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/${aws_lb_controller_version}/docs/install/iam_policy.json"
+  url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/${var.aws_lb_controller_version}/docs/install/iam_policy.json"
 
   request_headers = {
     Accept = "application/json"
